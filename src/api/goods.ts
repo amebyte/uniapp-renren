@@ -5,7 +5,7 @@ import request from '@/utils/request'
  *
  */
 export function fetchRecommendGoodsList(data) {
-  return request?.get?.(
+  return request.get!(
     '&r=goods.get_list&cate=14&page=1&comefrom=wxapp&openid=sns_wa_&mid=&merchid=&authkey=&timestamp=1642046054349',
     data,
     { noAuth: true }

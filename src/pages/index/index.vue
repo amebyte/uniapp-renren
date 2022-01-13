@@ -90,7 +90,7 @@ export default defineComponent({
         {
           url: '../../static/images/skip/curriculum.png',
           title: '课程',
-          path: '/pages/goods/goods-search/index?isSelected=true',
+          path: '/pages/my/login',
         },
         {
           url: '../../static/images/skip/AAndQ.png',

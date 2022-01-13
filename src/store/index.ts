@@ -16,6 +16,6 @@ export const store = createStore<RootState>({
   getters,
 })
 
-export function useStore(): Store {
+export const useStore = (): Store => {
   return store as Store
 }

@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/ban-types */
 import { HEADER, HEADERPARAMS, TOKENNAME, HTTP_REQUEST_URL } from '@/config/app'
-import { useStore } from 'vuex'
+import { store } from '@/store'
 type RequestOptionsMethod = 'OPTIONS' | 'GET' | 'HEAD' | 'POST' | 'PUT' | 'DELETE' | 'TRACE' | 'CONNECT'
 type RequestOptionsMethodAll = RequestOptionsMethod | Lowercase<RequestOptionsMethod>
 
@@ -14,13 +14,13 @@ function baseRequest(
   { noAuth = false, noVerify = false }: any,
   params: unknown
 ) {
-  const store = useStore()
   const token = store.state.app.token
   const Url = HTTP_REQUEST_URL
   let header = JSON.parse(JSON.stringify(HEADER))
   if (params != undefined) {
     header = HEADERPARAMS
   }
+
   if (!noAuth) {
     if (!token) {
       return Promise.reject({

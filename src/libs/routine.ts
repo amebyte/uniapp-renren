@@ -137,4 +137,4 @@ class Routine {
   }
 }
 
-export default new Routine()
+export const RoutineInstance = new Routine()

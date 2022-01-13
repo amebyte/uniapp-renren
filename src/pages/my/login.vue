@@ -1,7 +1,7 @@
 <template>
   <view class="login-wrap">
     <view class="login-submit-wrap">
-      <view class="login-button" @click="login()">
+      <view class="login-button" @click="loginHandler">
         <button hover-class="hover-button">微信账号一键登录</button>
       </view>
     </view>
@@ -14,13 +14,13 @@ import { PropType, ref, toRefs, defineComponent, reactive, onMounted } from 'vue
 import { useStore } from 'vuex'
 import { fetchUserInfo } from '@/api/user'
 import { fetchLogin } from '@/api/public'
-import Routine from '@/libs/routine'
+import { RoutineInstance } from '@/libs/routine'
 import { Tips } from '@/utils/util'
 export default defineComponent({
   name: 'LoginPage',
   setup() {
     const store = useStore()
-    const login = () => {
+    const loginHandler = () => {
       // #ifdef MP-WEIXIN
       getUserProfile()
       // #endif
@@ -63,11 +63,11 @@ export default defineComponent({
       uni.showLoading({
         title: '正在登录中',
       })
-      Routine.getUserProfile()
+      RoutineInstance.getUserProfile()
         .then((res) => {
-          Routine.getCode()
+          RoutineInstance.getCode()
             .then((code) => {
-              getWxUser(code, res)
+              goLogin(code)
             })
             .catch((res) => {
               uni.hideLoading()
@@ -94,7 +94,7 @@ export default defineComponent({
         sex: userInfo.userInfo.gender,
         nickName: userInfo.userInfo.nickName,
       }
-      Routine.authUserInfo(data)
+      RoutineInstance.authUserInfo(data)
         .then((res: any) => {
           if (res.status === 'OK') {
             uni.hideLoading()
@@ -112,7 +112,7 @@ export default defineComponent({
     }
     // #endif
     return {
-      login,
+      loginHandler,
     }
   },
 })

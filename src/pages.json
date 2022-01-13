@@ -68,6 +68,14 @@
             "navigationBarBackgroundColor": "#102c24",
             "enablePullDownRefresh": false
           }
+        },
+        {
+          "path": "login",
+          "style": {
+            "navigationBarTitleText": "登录",
+            "navigationBarBackgroundColor": "#102c24",
+            "enablePullDownRefresh": false
+          }
         }
       ]
     }

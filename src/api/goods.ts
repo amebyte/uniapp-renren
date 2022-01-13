@@ -17,7 +17,7 @@ export function fetchRecommendGoodsList(data) {
  *
  */
 export function fetchGoodsList(data) {
-  return request?.get?.('/product/recommend', data, { noAuth: true })
+  return request.get!('/product/recommend', data, { noAuth: true })
 }
 
 /**
@@ -25,5 +25,5 @@ export function fetchGoodsList(data) {
  *
  */
 export function fetchGoodsDetail(data) {
-  return request?.get?.('/product/detail', data, { noAuth: true })
+  return request.get!('/product/detail', data, { noAuth: true })
 }

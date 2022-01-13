@@ -5,5 +5,5 @@ import request from '@/utils/request.js'
  *
  */
 export function fetchUserInfo() {
-  return request?.get?.('/user/userInfo', {}, { noAuth: true })
+  return request.get!('/user/userInfo', {}, { noAuth: true })
 }

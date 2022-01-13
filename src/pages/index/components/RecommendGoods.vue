@@ -15,10 +15,10 @@
             <block v-for="(item, index) in newGoodsList" :key="index">
               <view class="item" @click="goDetail(item)">
                 <view class="img-box">
-                  <image :src="item.pic"></image>
+                  <image :src="item.thumb"></image>
                 </view>
-                <view class="pro-info line1">{{ item.prodName }}</view>
-                <view class="money font-color">新人价：￥{{ item.price }}</view>
+                <view class="pro-info line1">{{ item.title }}</view>
+                <view class="money font-color">新人价：￥{{ item.minprice }}</view>
               </view>
             </block>
           </scroll-view>
@@ -36,9 +36,9 @@ import { goodsTypes } from '@/utils/constant'
 import { Tips } from '@/utils/util'
 type goodsType = {
   id: string
-  pic: string
-  prodName: string
-  price: number
+  thumb: string
+  title: string
+  minprice: number
 }
 export default defineComponent({
   name: 'NewGoods',
@@ -64,7 +64,7 @@ export default defineComponent({
       fetchRecommendGoodsList(params)
         .then((r) => {
           console.log('r', r)
-          newGoodsList.value = r.data
+          newGoodsList.value = r.list
           console.log('newGoodsList', newGoodsList)
         })
         .catch((err) => console.log(err))

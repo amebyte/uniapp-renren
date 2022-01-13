@@ -22,6 +22,7 @@ module.exports = {
   rules: {
     'no-unused-vars': 'off',
     '@typescript-eslint/no-unused-vars': 'off',
+    '@typescript-eslint/no-this-alias': ['off'],
     semi: 0,
   },
   globals: {

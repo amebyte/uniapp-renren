@@ -15,7 +15,7 @@
               <view class="label">藤茶采制</view>
               <view class="label r">线下课程</view>
             </view>
-            <view class="title">走进自然 茶韵飘香走进自然 茶韵飘香走进自然 茶韵飘香</view>
+            <view class="title">{{ item.title }}</view>
             <view class="row">
               <view class="label">授课老师：</view>
               <view class="content">黄XX老师</view>
@@ -48,9 +48,9 @@ import { ref } from 'vue'
 import { fetchRecommendGoodsList } from '@/api/goods'
 type goodsType = {
   id: string
-  pic: string
-  prodName: string
-  price: number
+  thumb: string
+  title: string
+  minprice: number
 }
 let newGoodsList = ref<Array<goodsType>>([])
 const getNewGoodsList = () => {
@@ -61,7 +61,7 @@ const getNewGoodsList = () => {
   fetchRecommendGoodsList(params)
     .then((r) => {
       console.log('r', r)
-      newGoodsList.value = r.data
+      newGoodsList.value = r.list
       console.log('newGoodsList', newGoodsList)
     })
     .catch((err) => console.log(err))

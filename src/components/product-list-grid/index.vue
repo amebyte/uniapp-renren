@@ -3,13 +3,13 @@
     <view v-if="goodsList.length" class="list">
       <view v-for="(item, index) in goodsList" :key="index" class="item" @click="goDetail(item)">
         <view class="pictrue">
-          <image :src="item.pic" mode="widthFix"></image>
+          <image :src="item.thumb" mode="widthFix"></image>
         </view>
         <view class="text">
-          <view class="name line1">{{ item.prodName }}</view>
+          <view class="name line1">{{ item.title }}</view>
           <view class="vip acea-row row-between-wrapper">
             <view class="money font-color"
-              >￥<text class="num">{{ item.price }}</text>
+              >￥<text class="num">{{ item.minprice }}</text>
             </view>
             <view class="add-cart">
               <text class="iconfont icon-add-cart-fill"></text>
@@ -32,10 +32,9 @@ import { ref } from 'vue'
 import { fetchRecommendGoodsList } from '@/api/goods'
 type goodsType = {
   id: string
-  pic: string
-  prodName: string
-  price: number
-  shopName: string
+  thumb: string
+  title: string
+  minprice: number
 }
 let goodsList = ref<Array<goodsType>>([])
 const getNewGoodsList = () => {
@@ -46,7 +45,7 @@ const getNewGoodsList = () => {
   fetchRecommendGoodsList(params)
     .then((r) => {
       console.log('r', r)
-      goodsList.value = r.data
+      goodsList.value = r.list
       console.log('newGoodsList', goodsList.value)
     })
     .catch((err) => console.log(err))

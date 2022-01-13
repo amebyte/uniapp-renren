@@ -13,9 +13,10 @@ import { onPageScroll, onLoad, onShow, onHide, onReachBottom } from '@dcloudio/u
 import { PropType, ref, toRefs, defineComponent, reactive, onMounted } from 'vue'
 import { useStore } from 'vuex'
 import { fetchUserInfo } from '@/api/user'
-import { fetchLogin } from '@/api/public'
+import { fetchLogin, fetchAuth } from '@/api/public'
 import { RoutineInstance } from '@/libs/routine'
 import { Tips } from '@/utils/util'
+import Cache from '@/utils/cache'
 export default defineComponent({
   name: 'LoginPage',
   setup() {
@@ -67,7 +68,8 @@ export default defineComponent({
         .then((res) => {
           RoutineInstance.getCode()
             .then((code) => {
-              goLogin(code)
+              console.log('ress', res)
+              goLogin(code, res)
             })
             .catch((res) => {
               uni.hideLoading()
@@ -78,10 +80,29 @@ export default defineComponent({
         })
     }
 
-    const goLogin = (code) => {
-      fetchLogin({ code, comefrom: 'wxapp', openid: 'sns_wa_' })
+    const goLogin = (code, res) => {
+      fetchLogin({ code })
         .then((r) => {
           console.log('r', r)
+          Cache.set('openid', r.openid)
+          Cache.set('session_key', r.session_key)
+          if (r.error === 0) {
+            fetchAuth({
+              data: res.userInfo.encryptedData,
+              iv: res.userInfo.iv,
+              sessionKey: r.session_key,
+            })
+              .then((re) => {
+                console.log('res', re)
+              })
+              .catch((err) => console.log(err))
+          } else {
+            uni.showToast({
+              title: `获取用户登录态失败:` + r.message,
+              icon: 'none',
+              duration: 2000,
+            })
+          }
         })
         .catch((err) => console.log(err))
     }

@@ -8,6 +8,9 @@ import request from '@/utils/request'
  *	smsCode
  */
 export function fetchLogin(data) {
-  console.log('fecthlogin', '&r=wxapp.login&timestamp=1642067480407')
-  return request.post!('&r=wxapp.login&timestamp=1642067480407', data, { noAuth: true })
+  return request.post!('&r=wxapp.login&timestamp=1642067480407', data, { noAuth: true }, true)
+}
+
+export function fetchAuth(data) {
+  return request.get!('&r=wxapp.auth&timestamp=1642067480407', data, { noAuth: true })
 }

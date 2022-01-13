@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/ban-types */
 import { HEADER, HEADERPARAMS, TOKENNAME, HTTP_REQUEST_URL } from '@/config/app'
 import { store } from '@/store'
+import Cache from '@/utils/cache'
 type RequestOptionsMethod = 'OPTIONS' | 'GET' | 'HEAD' | 'POST' | 'PUT' | 'DELETE' | 'TRACE' | 'CONNECT'
 type RequestOptionsMethodAll = RequestOptionsMethod | Lowercase<RequestOptionsMethod>
 
@@ -10,7 +11,7 @@ type RequestOptionsMethodAll = RequestOptionsMethod | Lowercase<RequestOptionsMe
 function baseRequest(
   url: string,
   method: RequestOptionsMethod,
-  data: any,
+  data = {},
   { noAuth = false, noVerify = false }: any,
   params: unknown
 ) {
@@ -28,6 +29,14 @@ function baseRequest(
       })
     }
     if (token && token !== 'null') header[TOKENNAME] = 'Bearer ' + token
+  }
+  console.log('method', method)
+  if (method === 'POST') {
+    data['comefrom'] = 'wxapp'
+    data['openid'] = 'sns_wa_' + Cache.get('openid')
+    data['mid'] = ''
+    data['merchid'] = ''
+    data['authkey'] = Cache.get('authkey')
   }
 
   return new Promise((reslove, reject) => {
@@ -51,6 +60,7 @@ function baseRequest(
         if (noVerify) {
           reslove(res)
         } else if (res.statusCode === 200) {
+          Cache.set('authkey', res.data.authkey || '')
           reslove(res.data)
         } else {
           reject(res.data.message || '系统错误')
@@ -79,7 +89,7 @@ type Methods = typeof requestOptions[number]
 const request: { [key in Methods]?: Function } = {}
 
 requestOptions.forEach((method) => {
-  const m = method.toUpperCase as unknown as RequestOptionsMethod
+  const m = method.toUpperCase() as unknown as RequestOptionsMethod
   request[method] = (api, data, opt, params) => baseRequest(api, m, data, opt || {}, params)
 })
 

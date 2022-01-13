@@ -1,0 +1,113 @@
+{
+  "pages": [
+    // pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
+    {
+      "path": "pages/index/index",
+      "style": {
+        "navigationBarTitleText": "开卓首页",
+        "navigationStyle": "custom"
+      }
+    },
+    {
+      "path": "pages/goods/index",
+      "style": {
+        "navigationBarTitleText": "开卓商城"
+      }
+    },
+    {
+      "path": "pages/goods-cate/index",
+      "style": {
+        "navigationBarTitleText": "商品分类"
+      }
+    },
+    {
+      "path": "pages/goods/goodsDetail",
+      "style": {
+        "navigationBarTitleText": "商品详情"
+      }
+    },
+    {
+      "path": "pages/shopping-cart/index",
+      "style": {
+        "navigationBarTitleText": "购物车"
+      }
+    },
+    {
+      "path": "pages/user/index",
+      "style": {
+        "navigationBarTitleText": "用户中心"
+      }
+    },
+    {
+      "path": "pages/discover-home/index",
+      "style": {
+        "navigationBarTitleText": "发现首页"
+      }
+    }
+  ],
+  "subPackages": [
+    {
+      "root": "pages/discover",
+      "pages": [
+        {
+          "path": "activity",
+          "style": {
+            "navigationBarTitleText": "活动中心",
+            "enablePullDownRefresh": false
+          }
+        }
+      ]
+    },
+    {
+      "root": "pages/my",
+      "pages": [
+        {
+          "path": "memberCenter",
+          "style": {
+            "navigationBarTitleText": "会员中心",
+            "navigationBarBackgroundColor": "#102c24",
+            "enablePullDownRefresh": false
+          }
+        }
+      ]
+    }
+  ],
+  "globalStyle": {
+    "navigationBarTextStyle": "white",
+    "navigationBarTitleText": "uni-app",
+    "navigationBarBackgroundColor": "#1aa86c",
+    "backgroundColor": "#1aa86c"
+  },
+  "tabBar": {
+    "color": "#1AA86C",
+    "selectedColor": "#1AA86C",
+    "borderStyle": "white",
+    "backgroundColor": "#ffffff",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "iconPath": "static/images/footer-bar-index-icon.png",
+        "selectedIconPath": "static/images/footer-bar-index-icon-on.png",
+        "text": "首页"
+      },
+      {
+        "pagePath": "pages/goods/index",
+        "iconPath": "static/images/footer-bar-goods-icon.png",
+        "selectedIconPath": "static/images/footer-bar-goods-icon-on.png",
+        "text": "商城"
+      },
+      {
+        "pagePath": "pages/discover-home/index",
+        "iconPath": "static/images/footer-bar-discover-icon.png",
+        "selectedIconPath": "static/images/footer-bar-discover-icon-on.png",
+        "text": "发现"
+      },
+      {
+        "pagePath": "pages/user/index",
+        "iconPath": "static/images/footer-bar-user-icon.png",
+        "selectedIconPath": "static/images/footer-bar-user-icon-on.png",
+        "text": "我的"
+      }
+    ]
+  }
+}

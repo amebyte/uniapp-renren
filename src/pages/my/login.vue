@@ -13,6 +13,7 @@ import { onPageScroll, onLoad, onShow, onHide, onReachBottom } from '@dcloudio/u
 import { PropType, ref, toRefs, defineComponent, reactive, onMounted } from 'vue'
 import { useStore } from 'vuex'
 import { fetchUserInfo } from '@/api/user'
+import { fetchLogin } from '@/api/public'
 import Routine from '@/libs/routine'
 import { Tips } from '@/utils/util'
 export default defineComponent({
@@ -75,6 +76,14 @@ export default defineComponent({
         .catch((res) => {
           uni.hideLoading()
         })
+    }
+
+    const goLogin = (code) => {
+      fetchLogin({ code, comefrom: 'wxapp', openid: 'sns_wa_' })
+        .then((r) => {
+          console.log('r', r)
+        })
+        .catch((err) => console.log(err))
     }
 
     const getWxUser = (code, res) => {

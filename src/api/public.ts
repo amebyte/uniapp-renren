@@ -8,5 +8,5 @@ import request from '@/utils/request'
  *	smsCode
  */
 export function fetchLogin(data) {
-  return request?.post?.('/login', data, { noAuth: true })
+  return request?.post?.('&r=wxapp.login&timestamp=1642067480407', data, { noAuth: true })
 }

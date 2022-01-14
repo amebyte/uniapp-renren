@@ -6,7 +6,7 @@ import request from '@/utils/request'
  */
 export function fetchRecommendGoodsList(data) {
   return request.get!(
-    '&r=goods.get_list&cate=14&page=1&comefrom=wxapp&openid=sns_wa_&mid=&merchid=&authkey=&timestamp=1642046054349',
+    '&r=goods.get_list&page=1&comefrom=wxapp&openid=sns_wa_&mid=&merchid=&authkey=&timestamp=1642046054349',
     data,
     { noAuth: true }
   )
@@ -25,5 +25,13 @@ export function fetchGoodsList(data) {
  *
  */
 export function fetchGoodsDetail(data) {
-  return request.get!('/product/detail', data, { noAuth: true })
+  return request.get!('&r=goods.get_detail', data, { noAuth: true })
+}
+
+/**
+ * 商品属性
+ *
+ */
+export function fetchGoodsPicker(data) {
+  return request.get!('&r=goods.get_picker', data, { noAuth: true })
 }

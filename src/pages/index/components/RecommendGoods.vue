@@ -51,7 +51,7 @@ export default defineComponent({
   setup() {
     let newGoodsList = ref<Array<goodsType>>([])
     const goDetail = (item) => {
-      Tips(`/pages/goods/goodsDetail?productId=${item.productId}&type=${goodsTypes.NEW_USER_ONLY}`)
+      Tips(`/pages/goods/goodsDetail?productId=${item.id}`)
     }
     const gopage = (url) => {
       Tips(url)

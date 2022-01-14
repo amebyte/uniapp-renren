@@ -31,13 +31,13 @@ function baseRequest(
     if (token && token !== 'null') header[TOKENNAME] = 'Bearer ' + token
   }
   console.log('method', method)
-  if (method === 'POST') {
-    data['comefrom'] = 'wxapp'
-    data['openid'] = 'sns_wa_' + Cache.get('openid')
-    data['mid'] = ''
-    data['merchid'] = ''
-    data['authkey'] = Cache.get('authkey')
-  }
+  //   if (method === 'POST') {
+  data['comefrom'] = 'wxapp'
+  data['openid'] = 'sns_wa_' + Cache.get('openid')
+  data['mid'] = ''
+  data['merchid'] = ''
+  data['authkey'] = Cache.get('authkey')
+  //   }
 
   return new Promise((reslove, reject) => {
     uni.showLoading({
@@ -45,7 +45,7 @@ function baseRequest(
       mask: true,
     })
     uni.request({
-      url: Url + url,
+      url: Url + url + `&timestamp=${+(+new Date())}`,
       method: method || 'GET',
       header: header,
       data: data || {},

@@ -43,7 +43,7 @@ import GoodsContent from './components/GoodsContent.vue'
 import DetailFooterBar from './components/DetailFooterBar.vue'
 import GoodsCurriculum from './components/GoodsCurriculum.vue'
 import GoodsTeacher from './components/GoodsTeacher.vue'
-import { fetchGoodsDetail } from '@/api/goods'
+import { fetchGoodsDetail, fetchGoodsPicker } from '@/api/goods'
 export default defineComponent({
   name: 'GoodsDetail',
   components: {
@@ -57,10 +57,11 @@ export default defineComponent({
   },
   setup() {
     let state = reactive({
+      productId: '',
       goodsInfo: {} as any,
       sliderImage: [],
       attr: {
-        isOpenAttrWindow: true, // 是否打开属性面板
+        isOpenAttrWindow: false, // 是否打开属性面板
         productAttr: [],
         productSelect: {},
       } as any,
@@ -70,11 +71,11 @@ export default defineComponent({
       attrTxt: '请选择',
     })
     const getGoodsDetail = () => {
-      fetchGoodsDetail({})
+      fetchGoodsDetail({ id: state.productId })
         .then((r) => {
           console.log('r', r)
-          state.goodsInfo = r.data.data
-          state.sliderImage = state.goodsInfo.sliderImage
+          state.goodsInfo = r.goods
+          state.sliderImage = state.goodsInfo.thumbs
           state.attr.productAttr = state.goodsInfo.productAttr
           state.goodsInfo.content = state.goodsInfo.content.replace(
             /<img/gi,
@@ -84,6 +85,14 @@ export default defineComponent({
           setDefaultAttrSelect(state.goodsInfo.minHeap)
         })
         .catch((err) => console.log('err', err))
+    }
+
+    const getGoodsPicker = () => {
+      fetchGoodsPicker({ id: state.productId })
+        .then((r) => {
+          console.log('r', r)
+        })
+        .catch((err) => console.log(err))
     }
 
     /**
@@ -112,6 +121,7 @@ export default defineComponent({
      * 设置是否打开属性面板
      */
     const setIsOpenAttrWindow = (flag) => {
+      flag && getGoodsPicker()
       state.attr.isOpenAttrWindow = flag
     }
 
@@ -215,6 +225,10 @@ export default defineComponent({
     }
     onShow(() => {
       getGoodsDetail()
+    })
+    onLoad((options) => {
+      state.productId = options.productId!
+      console.log('options', options)
     })
     return {
       ...toRefs(state),

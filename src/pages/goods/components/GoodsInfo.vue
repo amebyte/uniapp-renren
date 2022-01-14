@@ -10,7 +10,7 @@
       <view class="good-price">
         <view class="price">
           <text class="rmb">¥</text>
-          <text class="num">{{ goodsInfo.price }}</text>
+          <text class="num">{{ goodsInfo.minprice }}</text>
         </view>
         <view class="goods-obtain-type">
           <view class="goods-obtain-wrap">
@@ -27,12 +27,12 @@
     <view class="good-market-price">
       <view class="price line-through">
         <text class="rmb">¥</text>
-        <text class="num">{{ goodsInfo.marketPrice }}</text>
+        <text class="num">{{ goodsInfo.productprice }}</text>
       </view>
     </view>
 
     <view class="good-title">
-      <text class="txt">{{ goodsInfo.prodName }}</text>
+      <text class="txt">{{ goodsInfo.title }}</text>
     </view>
     <view class="good-tags" style="padding-bottom: 20rpx">
       <text class="txt">{{ goodsInfo.brief }}</text>

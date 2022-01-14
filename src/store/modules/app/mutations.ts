@@ -19,7 +19,6 @@ export const mutations: MutationTree<AppState> & Mutations = {
     Cache.clear(LOGIN_STATUS)
   },
   [AppMutationTypes.SET_USER_INFO](state: AppState, userInfo: any) {
-    state.token = ''
     state.userInfo = userInfo
     Cache.set(USER_INFO, userInfo)
   },

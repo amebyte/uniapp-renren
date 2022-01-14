@@ -94,6 +94,8 @@ export default defineComponent({
             })
               .then((re) => {
                 console.log('res', re)
+                store.commit('SET_USER_INFO', res.userInfo)
+                Cache.set('login_session_key', re.session_key)
               })
               .catch((err) => console.log(err))
           } else {

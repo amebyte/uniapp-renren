@@ -21,6 +21,7 @@ module.exports = {
   plugins: [],
   rules: {
     'no-unused-vars': 'off',
+    'no-self-assign': 'off',
     '@typescript-eslint/no-unused-vars': 'off',
     '@typescript-eslint/no-this-alias': ['off'],
     '@typescript-eslint/no-non-null-assertion': 'off',

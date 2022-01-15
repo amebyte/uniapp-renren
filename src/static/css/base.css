@@ -8,24 +8,8 @@ body {
 	height: 100%;
 }
 
-.padding20 {
-	padding: 20rpx
-}
-
-.pad20 {
-	padding: 0 20rpx
-}
-
-.padding30 {
-	padding: 30rpx
-}
-
-.pad30 {
-	padding: 0 30rpx
-}
-
-.p_center{
-	text-align: center;
+.btn-bg-color {
+    background-color: #1aa86c;
 }
 
 .acea-row {

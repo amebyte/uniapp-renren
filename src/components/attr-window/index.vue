@@ -18,6 +18,7 @@
             ￥<text class="num">{{ attr.productSelect.price }}</text>
             <text class="stock">{{ attr.productSelect.limits ? '限量' : '库存' }}: {{ attr.productSelect.stock }}</text>
           </view>
+          <view class="attr-txt">{{ attrTxt }}</view>
         </view>
         <view class="iconfont icon-close-circle" @click="closeWindow"></view>
       </view>
@@ -76,13 +77,15 @@
           </view>
         </view>
       </view>
-      <view v-if="isGroupBuying && attr.productSelect.stock" class="joinBnt bg-color" @click="confirm">我要参团</view>
+      <view v-if="isGroupBuying && attr.productSelect.stock" class="joinBnt btn-bg-color" @click="confirm"
+        >我要参团</view
+      >
       <view
         v-else-if="(iSbnt && attr.productSelect.quota <= 0) || (iSbnt && attr.productSelect.stock <= 0)"
         class="joinBnt on"
         >已售罄</view
       >
-      <view v-if="iScart && attr.productSelect.stock" class="joinBnt bg-color" @click="confirm">确定</view>
+      <view v-if="iScart && attr.productSelect.stock" class="joinBnt btn-bg-color" @click="confirm">确定</view>
       <view v-else-if="iScart && !attr.productSelect.stock" class="joinBnt on">已售罄</view>
     </view>
     <view class="mask" :hidden="attr.isOpenAttrWindow === false" @touchmove.prevent @click="closeWindow"></view>
@@ -101,6 +104,10 @@ export default defineComponent({
       default: () => {
         return {}
       },
+    },
+    attrTxt: {
+      type: String,
+      default: '',
     },
     isGroupBuying: {
       type: Number,
@@ -218,7 +225,7 @@ export default defineComponent({
 
 .product-window .textpic .text .money {
   font-size: 24rpx;
-  margin-top: 40rpx;
+  margin-top: 10rpx;
 }
 
 .product-window .textpic .text .money .num {
@@ -228,6 +235,13 @@ export default defineComponent({
 .product-window .textpic .text .money .stock {
   color: #999;
   margin-left: 18rpx;
+}
+
+.product-window .textpic .text .attr-txt {
+  font-size: 24rpx;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
 }
 
 .product-window .textpic .iconfont {

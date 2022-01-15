@@ -16,12 +16,13 @@
     <GoodsContent :goods-info="goodsInfo" />
     <!--商品详情 end-->
     <!--底部导航栏 start-->
-    <DetailFooterBar ref="detailFooterBar" @setIsOpenAttrWindow="setIsOpenAttrWindow" />
+    <DetailFooterBar ref="detailFooterBarRef" @setIsOpenAttrWindow="setIsOpenAttrWindow" />
     <!--底部导航栏 end-->
     <!--规格属性 start-->
     <AttrWindow
       id="attr-window"
       :attr="attr"
+      :attr-txt="attrTxt"
       :i-splus="1"
       :i-scart="1"
       @closeWindow="closeWindow"
@@ -58,7 +59,7 @@ export default defineComponent({
   },
   setup() {
     let state = reactive({
-      productId: '',
+      productId: '33',
       goodsInfo: {} as any,
       sliderImage: [],
       attr: {
@@ -71,6 +72,7 @@ export default defineComponent({
       attrValue: '',
       attrTxt: '请选择',
     })
+    const detailFooterBarRef = ref(null)
     const getGoodsDetail = () => {
       fetchGoodsDetail({ id: state.productId })
         .then((r) => {
@@ -90,8 +92,10 @@ export default defineComponent({
       fetchGoodsPicker({ id: state.productId })
         .then((r) => {
           console.log('r', r)
-          state.attr.productAttr = normalizeSkus(r.specs)
+          state.goodsInfo['goodsSkus'] = normalizeGoodsSkus(r.options)
+          state.attr.productAttr = normalizeAttrs(r.specs)
           const minPrice = minHeap(r.options, 'marketprice')
+          console.log('minPrice', minPrice)
           setDefaultAttrSelect(minPrice)
         })
         .catch((err) => console.log(err))
@@ -103,7 +107,24 @@ export default defineComponent({
       return data
     }
 
-    const normalizeSkus = (skus) => {
+    const normalizeGoodsSkus = (data) => {
+      return data.map((o) => {
+        // 预售价
+        o['presellPrice'] = o.presellprice
+        // 现价/市场价
+        o['marketPrice'] = o.marketprice
+        // 原价
+        o['productPrice'] = o.productprice
+        // 成本价
+        o['costPrice'] = o.costprice
+        // 库存
+        o['stock'] = o.stock
+        o['skuUniqueIds'] = o.specs
+        return o
+      })
+    }
+
+    const normalizeAttrs = (skus) => {
       return skus.map((o) => {
         o['attrId'] = o.id
         o['attrName'] = o.title
@@ -111,6 +132,7 @@ export default defineComponent({
         o.attrValues.map((val) => {
           val['isSelect'] = false
           val['val'] = val.title
+          val['valId'] = val.id
           return val
         })
         return o
@@ -125,11 +147,11 @@ export default defineComponent({
       state.attr.productSelect.productName = state.goodsInfo.productName
       state.attr.productSelect.image = data.thumb || state.goodsInfo.thumb
       state.attr.productSelect.price = data.marketprice
-      state.attr.productSelect.actualStocks = data.stock
+      state.attr.productSelect.stock = data.stock
       state.attr.productSelect.limits = data.limits
       state.attr.productSelect.cart_num = 1
       state.attrValue = ''
-      state.attrTxt = '已选择'
+      state.attrTxt = '请选择'
 
       if (data.properties) {
         const properties = JSON.parse(data.properties)
@@ -167,8 +189,9 @@ export default defineComponent({
      * 属性选中确认回调
      */
     const confirm = () => {
-      const { proxy } = getCurrentInstance() as any
-      const { buyNow, addCart, groupBuyingNow } = proxy.$refs.detailFooterBar
+      //   const instance = getCurrentInstance() as any
+      console.log('instance', detailFooterBarRef.value)
+      const { buyNow, addCart, groupBuyingNow } = detailFooterBarRef.value as any
       setIsOpenAttrWindow(false)
       state.isBuyNow ? buyNow() : addCart()
       setIsBuyNow(false)
@@ -203,13 +226,53 @@ export default defineComponent({
      */
     const selectAttrVal = (attrval, attrid) => {
       setAttrVal(attrval, attrid)
-      // const goods = this.commonCartParam(false)
-      const goods = {} as any
-      if (goods) {
-        state.attr.productSelect.image = goods.productSkuVO.pic
-        state.attr.productSelect.price = goods.productSkuVO.price
-        state.attr.productSelect.stock = goods.productSkuVO.actualStocks
+      const skus = getSelectedAttrVal()
+      state.attrTxt = createSelectedAttrTxt(skus)
+      const goodsItem: any = createCartParam(skus)
+      if (goodsItem) {
+        if (goodsItem.selectedSku.thumb) state.attr.productSelect.image = goodsItem.selectedSku.thumb
+        if (goodsItem.selectedSku.price) state.attr.productSelect.price = goodsItem.selectedSku.price
+        if (goodsItem.selectedSku.stock) state.attr.productSelect.stock = goodsItem.selectedSku.stock
       }
+    }
+
+    /**
+     * 创建购物车参数
+     */
+    const createCartParam = (skus) => {
+      let goodsItem = {
+        selectedSku: {},
+      }
+
+      const skuUniqueIds = createSkuUniqueIds(skus)
+      state.goodsInfo.goodsSkus.forEach((o) => {
+        if (o.skuUniqueIds === skuUniqueIds) {
+          goodsItem['selectedSku'] = {
+            thumb: createThumb(skus),
+            stock: o.stock,
+            price: o.marketPrice,
+          }
+        }
+      })
+
+      return goodsItem
+    }
+
+    const createSkuUniqueIds = (skus) => {
+      const skuUniqueIds = skus.reduce((prev, curr) => `${prev}_${curr.valId}`, '')
+      return skuUniqueIds.slice(1)
+    }
+
+    const createSelectedAttrTxt = (skus) => {
+      const attrTxt = skus.reduce((prev, curr) => `${prev};${curr.val}`, '')
+      return `已选择：${attrTxt.slice(1)}`
+    }
+
+    const createThumb = (skus) => {
+      return skus.reduce((prev, curr) => {
+        if (curr.thumb !== '') prev = curr.thumb
+        return prev
+      }, '')
     }
 
     /**
@@ -235,6 +298,21 @@ export default defineComponent({
     }
 
     /**
+     * 获取已经选择的规格属性
+     */
+    const getSelectedAttrVal = () => {
+      let skus: any[] = []
+      state.attr.productAttr.forEach((o) => {
+        o.attrValues.forEach((v) => {
+          if (v.isSelect) {
+            skus.push(v)
+          }
+        })
+      })
+      return skus
+    }
+
+    /**
      * 购物车手动填写
      *
      */
@@ -249,11 +327,12 @@ export default defineComponent({
       getGoodsDetail()
     })
     onLoad((options) => {
-      state.productId = options.productId!
+      //   state.productId = options.productId!
       console.log('options', options)
     })
     return {
       ...toRefs(state),
+      detailFooterBarRef,
       setIsOpenAttrWindow,
       iptCartNum,
       changeCartNum,

@@ -65,6 +65,12 @@ export default defineComponent({
     const buyNowAction = () => {
       openAttrWindow()
     }
+    /*
+     * 加入购物车
+     */
+    const addCart = () => {
+      console.log('addCart')
+    }
     return {
       cartCount,
       isFavorite,
@@ -72,6 +78,7 @@ export default defineComponent({
       toggleFavourite,
       joinCart,
       buyNowAction,
+      addCart,
     }
   },
 })

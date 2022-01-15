@@ -44,6 +44,7 @@ import DetailFooterBar from './components/DetailFooterBar.vue'
 import GoodsCurriculum from './components/GoodsCurriculum.vue'
 import GoodsTeacher from './components/GoodsTeacher.vue'
 import { fetchGoodsDetail, fetchGoodsPicker } from '@/api/goods'
+import { minHeap } from '@/utils/util'
 export default defineComponent({
   name: 'GoodsDetail',
   components: {
@@ -74,15 +75,13 @@ export default defineComponent({
       fetchGoodsDetail({ id: state.productId })
         .then((r) => {
           console.log('r', r)
-          state.goodsInfo = r.goods
-          state.sliderImage = state.goodsInfo.thumbs
-          state.attr.productAttr = state.goodsInfo.productAttr
+          state.goodsInfo = normalizeGoodsInfo(r.goods)
+          state.sliderImage = state.goodsInfo.sliderImage
           state.goodsInfo.content = state.goodsInfo.content.replace(
             /<img/gi,
             "<img class='richImg' style='width:auto!important;height:auto!important;max-height:100%;width:100%;'"
           )
           state.goodsInfo.content = state.goodsInfo.content.replace(/&nbsp;/g, '&ensp;')
-          setDefaultAttrSelect(state.goodsInfo.minHeap)
         })
         .catch((err) => console.log('err', err))
     }
@@ -91,8 +90,31 @@ export default defineComponent({
       fetchGoodsPicker({ id: state.productId })
         .then((r) => {
           console.log('r', r)
+          state.attr.productAttr = normalizeSkus(r.specs)
+          const minPrice = minHeap(r.options, 'marketprice')
+          setDefaultAttrSelect(minPrice)
         })
         .catch((err) => console.log(err))
+    }
+
+    const normalizeGoodsInfo = (data) => {
+      data['productName'] = data.title
+      data['sliderImage'] = data.thumbs
+      return data
+    }
+
+    const normalizeSkus = (skus) => {
+      return skus.map((o) => {
+        o['attrId'] = o.id
+        o['attrName'] = o.title
+        o['attrValues'] = o.items
+        o.attrValues.map((val) => {
+          val['isSelect'] = false
+          val['val'] = val.title
+          return val
+        })
+        return o
+      })
     }
 
     /**
@@ -100,10 +122,10 @@ export default defineComponent({
      * @param {Object} data
      */
     const setDefaultAttrSelect = (data) => {
-      state.attr.productSelect.storeName = state.goodsInfo.prodName
-      state.attr.productSelect.image = data.pic
-      state.attr.productSelect.price = data.price
-      state.attr.productSelect.actualStocks = data.actualStocks
+      state.attr.productSelect.productName = state.goodsInfo.productName
+      state.attr.productSelect.image = data.thumb || state.goodsInfo.thumb
+      state.attr.productSelect.price = data.marketprice
+      state.attr.productSelect.actualStocks = data.stock
       state.attr.productSelect.limits = data.limits
       state.attr.productSelect.cart_num = 1
       state.attrValue = ''

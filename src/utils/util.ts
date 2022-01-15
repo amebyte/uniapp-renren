@@ -117,3 +117,25 @@ export const Debounce = (fn, t) => {
     }, delay)
   }
 }
+
+/**
+ * 根据最小堆获取最小值
+ */
+export const minHeap = (arr, property) => {
+  const data: any[] = []
+  for (const o of arr) {
+    data.push(o)
+    let index = data.length - 1
+    while (index > 0) {
+      const parentIndex = (index - 1) >>> 1
+      const parent = data[parentIndex]
+      if (o[property] < parent[property]) {
+        ;[data[index], data[parentIndex]] = [data[parentIndex], data[index]]
+        index = parentIndex
+      } else {
+        break
+      }
+    }
+  }
+  return data.length === 0 ? null : data[0]
+}

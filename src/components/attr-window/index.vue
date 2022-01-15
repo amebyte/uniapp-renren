@@ -12,7 +12,7 @@
         </view>
         <view class="text">
           <view class="line1">
-            {{ attr.productSelect.storeName }}
+            {{ attr.productSelect.productName }}
           </view>
           <view class="money font-color">
             ￥<text class="num">{{ attr.productSelect.price }}</text>

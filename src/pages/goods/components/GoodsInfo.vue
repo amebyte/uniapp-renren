@@ -32,7 +32,7 @@
     </view>
 
     <view class="good-title">
-      <text class="txt">{{ goodsInfo.title }}</text>
+      <text class="txt">{{ goodsInfo.productName }}</text>
     </view>
     <view class="good-tags" style="padding-bottom: 20rpx">
       <text class="txt">{{ goodsInfo.brief }}</text>

@@ -1,0 +1,37 @@
+import request from '@/utils/request'
+
+/**
+ * 购物车列表
+ *
+ */
+export function fetchCartList() {
+  return request.get!(
+    '&r=goods.get_list&page=1&comefrom=wxapp&openid=sns_wa_&mid=&merchid=&authkey=&timestamp=1642046054349',
+    {},
+    { noAuth: true }
+  )
+}
+
+/**
+ * 更新购物车
+ *
+ */
+export function fetchUpdateCart(data) {
+  return request.get!(
+    '&r=goods.get_list&page=1&comefrom=wxapp&openid=sns_wa_&mid=&merchid=&authkey=&timestamp=1642046054349',
+    data,
+    { noAuth: true }
+  )
+}
+
+/**
+ * 删除购物车
+ *
+ */
+export function fetchDeleteCart(data) {
+  return request.get!(
+    '&r=goods.get_list&page=1&comefrom=wxapp&openid=sns_wa_&mid=&merchid=&authkey=&timestamp=1642046054349',
+    data,
+    { noAuth: true }
+  )
+}

@@ -144,9 +144,9 @@
 <script lang="ts">
 import { onPageScroll, onLoad, onShow, onHide, onReachBottom } from '@dcloudio/uni-app'
 import { ref, getCurrentInstance, reactive, toRef, computed, defineComponent, toRefs } from 'vue'
-import { mapGetters } from 'vuex'
+import { useStore } from 'vuex'
 import { fetchCartList, fetchUpdateCart, fetchDeleteCart } from '@/api/cart'
-import moveBox from '@/components/moveBox'
+import moveBox from '@/components/move-box/index.vue'
 import { Tips, Debounce } from '@/utils/util'
 
 export default defineComponent({
@@ -163,7 +163,7 @@ export default defineComponent({
       moveName: null,
       selectedPriceTotal: 0, // 选中的商品总价
       selectedGoodsTotal: 0, // 选中的商品总数
-      selectedGoodsItems: [], // 选中的商品
+      selectedGoodsItems: [] as any, // 选中的商品
       selectDeleteLength: 0,
       isDeleteSelectAll: false,
       isSelectAll: false,
@@ -213,7 +213,7 @@ export default defineComponent({
       let deleteNumber = 0
       let cartItemLength = 0
       let total = 0
-      let selectedGoods = []
+      let selectedGoods: any[] = []
       cartList.map((item) => {
         let isSelectedNum = 0
         if (item.children) {
@@ -443,18 +443,11 @@ export default defineComponent({
         })
         return
       }
-
+      const store = useStore()
       store.dispatch('saveSelectedGoods', state.selectedGoodsItems)
       console.log('toCreateOrder', state.selectedGoodsTotal)
-      // 订单类型
-      // 普通
-      let orderType = goodsTypes.PLAIN
-      // 内购
-      if (t2.includes(true)) {
-        orderType = goodsTypes.INTERNAL_PURCHASE
-      }
 
-      Tips('/pages/users/order/create?orderType=' + orderType)
+      Tips('/pages/users/order/create?orderType=')
     }
 
     /**
@@ -560,11 +553,15 @@ export default defineComponent({
         .catch((err) => console.log(err))
     }
 
+    const normalizeCart = (data) => {
+      return data
+    }
+
     /**
      * 购物车数据初始化
      */
     const initCart = (cartList) => {
-      const cartsItemGroupData = util.normalizeCart(cartList)
+      const cartsItemGroupData = normalizeCart(cartList)
       state.cartList = cartsItemGroupData
     }
     return {
@@ -662,19 +659,12 @@ export default defineComponent({
       }
 
       .goods-wrap {
-        // margin-bottom: 20rpx;
-
         .item-wrapper {
           position: relative;
-          // border-radius: 10rpx;
-          // margin-top: 20rpx;
-          // margin-left: 20rpx;
-          // margin-right: 20rpx;
           overflow: hidden;
           padding: 8rpx 0;
 
           .goods-item {
-            // background-color: #fff;
             display: flex;
             flex-direction: row;
             padding: 20rpx 26rpx 20rpx 30rpx;
@@ -705,12 +695,6 @@ export default defineComponent({
                 overflow: hidden;
 
                 .image {
-                  // width: 160rpx;
-                  // position: absolute;
-                  // top: 50%;
-                  // left: 50%;
-                  // transform: translate(-50%, -50%);
-                  // border-radius: 10rpx;
                   width: 100%;
                   height: 100%;
                 }
@@ -825,7 +809,6 @@ export default defineComponent({
     font-size: 28rpx;
     padding: 0 20rpx;
     border-bottom: 1px solid rgba(218, 218, 218, 0.3);
-    // box-shadow: 0 1px 5px 0 rgba(180, 180, 180, 0.5);
     /* #ifdef H5 */
     bottom: 50px;
     /* #endif */
@@ -850,11 +833,6 @@ export default defineComponent({
     }
 
     .pay {
-      // width: 220rpx;
-      // height: 98rpx;
-      // line-height: 98rpx;
-      // text-align: center;
-      // background-color: #E60012;
       color: #fff;
       width: 114px;
       height: 41px;

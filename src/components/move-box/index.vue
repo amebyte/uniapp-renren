@@ -83,6 +83,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
+@import '@/static/css/variable.scss';
 .cu-item {
   position: relative;
   transition: all 0.6s ease-in-out 0s;
@@ -101,7 +102,7 @@ export default defineComponent({
     width: 146rpx;
     height: 100%;
     transform: translateX(100%);
-    background-image: linear-gradient(135deg, #59b3ff 0%, #1c87f0 100%);
+    background-image: linear-gradient(135deg, $top-background-color 0%, $theme-font-color 100%);
     border-radius: 0 8px 8px 0;
     color: #fff;
     align-items: center;

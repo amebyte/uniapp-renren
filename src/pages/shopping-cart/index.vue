@@ -17,24 +17,14 @@
                 :class="parentItem.deleteSelected ? 'selected' : ''"
                 @click="selectGroupDelete(index)"
               >
-                <image
-                  v-if="parentItem.deleteSelected"
-                  class="image"
-                  mode="widthFix"
-                  src="../../static/images/meviky/checked.svg"
-                />
-                <image v-else class="image" mode="widthFix" src="../../static/images/meviky/uncheck.svg" />
+                <text v-if="parentItem.deleteSelected" class="iconfont icon-radio-checked"></text>
+                <text v-else class="iconfont icon-radio-uncheck"></text>
               </view>
             </block>
             <block v-else>
               <view class="check" :class="parentItem.selected ? 'selected' : ''" @click="selectGroup(index)">
-                <image
-                  v-if="parentItem.selected"
-                  class="image"
-                  mode="widthFix"
-                  src="../../static/images/meviky/checked.svg"
-                />
-                <image v-else class="image" mode="widthFix" src="../../static/images/meviky/uncheck.svg" />
+                <text v-if="parentItem.selected" class="iconfont icon-radio-checked"></text>
+                <text v-else class="iconfont icon-radio-uncheck"></text>
               </view>
             </block>
             <view class="shop-name">
@@ -56,56 +46,40 @@
                     <!--check-box start-->
                     <block v-if="isEdit">
                       <view class="check" @click="selectGoodsDelete(childItem.id, index)">
-                        <image
-                          v-if="childItem.deleteSelected"
-                          mode="widthFix"
-                          src="../../static/images/meviky/checked.svg"
-                          class="image"
-                        />
-                        <image v-else mode="widthFix" src="../../static/images/meviky/uncheck.svg" class="image" />
+                        <text v-if="childItem.deleteSelected" class="iconfont icon-radio-checked"></text>
+                        <text v-else class="iconfont icon-radio-uncheck"></text>
                       </view>
                     </block>
                     <block v-else>
                       <view class="check" @click="selectGoods(childItem.id, index)">
-                        <image
-                          v-if="childItem.selected"
-                          mode="widthFix"
-                          src="../../static/images/meviky/checked.svg"
-                          class="image"
-                        />
-                        <image v-else mode="widthFix" src="../../static/images/meviky/uncheck.svg" class="image" />
+                        <text v-if="childItem.selected" class="iconfont icon-radio-checked"></text>
+                        <text v-else class="iconfont icon-radio-uncheck"></text>
                       </view>
                     </block>
                     <!--check-box end-->
                     <!--商品 start-->
                     <view class="goods-wrap">
                       <view class="pic-wrap">
-                        <image class="image" mode="widthFix" lazy-load :src="childItem.productSkuVO.pic" />
+                        <image class="image" mode="widthFix" lazy-load :src="childItem.thumb" />
                       </view>
                       <view class="goods-info-wrap">
-                        <view class="goods-name">{{ childItem.productSkuVO.prodName }}</view>
+                        <view class="goods-name">{{ childItem.productName }}</view>
                         <view class="sku-name">
-                          <text class="txt">{{ childItem.productSkuVO.skuName }}</text>
+                          <text class="txt">{{ childItem.skuName }}</text>
                         </view>
-                        <view class="actual-stocks">库存：{{ childItem.productSkuVO.actualStocks }} </view>
+                        <view class="actual-stocks">库存：{{ childItem.stock }} </view>
                         <view class="goods-price-wrap">
-                          <block v-if="parentItem.internal">
-                            <!--内购店价格-->
-                            <view class="goods-price"> ￥{{ childItem.productSkuVO.internalPrice }}</view>
-                          </block>
-                          <block v-else>
-                            <view class="goods-price"> ￥{{ childItem.productSkuVO.sellingPrice }}</view>
-                          </block>
+                          <view class="goods-price"> ￥{{ childItem.marketPrice }}</view>
                           <view class="editor-number">
                             <view
                               class="action reduce"
-                              :class="childItem.num === 1 ? 'disable-reduce-button' : ''"
+                              :class="childItem.cartNum === 1 ? 'disable-reduce-button' : ''"
                               @click="reduce(childItem)"
                             >
                               <text class="iconfont icon-minus-bold"></text>
                             </view>
                             <input
-                              v-model="childItem.num"
+                              v-model="childItem.cartNum"
                               class="number-input"
                               type="number"
                               @input="setCount(childItem)"
@@ -217,15 +191,15 @@ export default defineComponent({
       cartList.map((item) => {
         let isSelectedNum = 0
         if (item.children) {
-          item.children.map((litem) => {
+          item.children.map((childItem) => {
             cartItemLength++
-            if (litem.selected) {
+            if (childItem.selected) {
               number++
-              total = total + litem.productSkuVO.sellingPrice * litem.num
+              total = total + childItem.marketPrice * childItem.cartNum
               isSelectedNum++
-              selectedGoods.push(litem)
+              selectedGoods.push(childItem)
             }
-            if (litem.deleteSelected) {
+            if (childItem.deleteSelected) {
               deleteNumber++
             }
           })
@@ -454,11 +428,11 @@ export default defineComponent({
      * 点击增加商品数量
      */
     const add = (item) => {
-      item.num = parseInt(item.num) + 1
+      item.cartNum = parseInt(item.cartNum) + 1
       const params = {
         id: item.id,
-        num: item.num,
-        skuId: item.productSkuVO.id,
+        num: item.cartNum,
+        skuId: item.skuId,
       }
       updateCart(params)
     }
@@ -474,8 +448,8 @@ export default defineComponent({
       item.num = parseInt(item.num) - 1
       const params = {
         id: item.id,
-        num: item.num,
-        skuId: item.productSkuVO.id,
+        num: item.cartNum,
+        skuId: item.skuId,
       }
       updateCart(params)
     }
@@ -486,17 +460,17 @@ export default defineComponent({
     const setCount = (item) => {
       console.log('setCount', item)
       const debounceFn = Debounce(() => {
-        if (!item.num) {
+        if (!item.cartNum) {
           return
         }
-        const count = Number(item.num)
+        const count = Number(item.cartNum)
         if (count <= 0) {
           return
         }
         const params = {
           id: item.id,
           num: count,
-          skuId: item.productSkuVO.id,
+          skuId: item.skuId,
         }
         updateCart(params)
       }, 100)
@@ -548,13 +522,88 @@ export default defineComponent({
     const getCartList = () => {
       fetchCartList()
         .then((r) => {
-          initCart(r.data)
+          initCart(r.merch_list)
         })
         .catch((err) => console.log(err))
     }
 
+    /**
+     * 购物车数据结构
+     */
     const normalizeCart = (data) => {
-      return data
+      let temp: any[] = []
+      data.forEach((v) => {
+        v.list.forEach((val) => {
+          temp.push({
+            ...v,
+            ...val,
+          })
+        })
+      })
+
+      let cartsItemGroupData: any[] = []
+      temp.forEach((v) => {
+        const shopId = v.merchid
+
+        const groupData = {
+          shopId,
+          shopName: v.merchname || '自营商品',
+          selectedGoodsCount: 0, // 选中商品数量
+          deleteGoodsCount: 0, // 选中要删除的商品数量
+          selected: false, // 店铺商品全选状态
+          deleteSelected: false, // 店铺全选删除状态
+        }
+
+        const cartItem = {
+          // 预售价
+          presellPrice: v.presellprice,
+          // 现价/市场价
+          marketPrice: v.marketprice,
+          // 原价
+          productPrice: v.productprice,
+          // 成本价
+          costPrice: v.costprice,
+          // 库存
+          id: v.id,
+          stock: v.stock,
+          skuName: v.optiontitle,
+          skuId: v.specs,
+          productName: v.title,
+          thumb: v.thumb,
+          cartNum: v.cart_number,
+        }
+
+        if (cartsItemGroupData.length > 0) {
+          if (cartsItemGroupData.some((val) => val.shopId === shopId)) {
+            cartsItemGroupData.forEach((o, j) => {
+              if (o.shopId === shopId) {
+                cartsItemGroupData[j].children.push({
+                  ...cartItem,
+                })
+              }
+            })
+          } else {
+            cartsItemGroupData.push({
+              ...groupData,
+              children: [
+                {
+                  ...cartItem,
+                },
+              ],
+            })
+          }
+        } else {
+          cartsItemGroupData.push({
+            ...groupData,
+            children: [
+              {
+                ...cartItem,
+              },
+            ],
+          })
+        }
+      })
+      return cartsItemGroupData
     }
 
     /**
@@ -562,8 +611,23 @@ export default defineComponent({
      */
     const initCart = (cartList) => {
       const cartsItemGroupData = normalizeCart(cartList)
+      console.log('cartsItemGroupData', cartsItemGroupData)
       state.cartList = cartsItemGroupData
     }
+
+    onShow(() => {
+      getCartList()
+    })
+
+    onLoad(() => {
+      uni.getSystemInfo({
+        success: function (res) {
+          state.height = res.windowHeight - 44 - 49 - 10
+          console.log('res', res)
+          //res.windowHeight:获取整个窗口高度为px，*2为rpx；98为头部占据的高度；
+        },
+      })
+    })
     return {
       ...toRefs(state),
       toggleEdit,
@@ -580,25 +644,11 @@ export default defineComponent({
       deleteAll,
     }
   },
-  onShow() {
-    if (this.isLogin) {
-      this.getCartList()
-    }
-  },
-  onLoad() {
-    const _this = this
-    uni.getSystemInfo({
-      success: function (res) {
-        _this.height = res.windowHeight - 44 - 49 - 10
-        console.log('res', res)
-        //res.windowHeight:获取整个窗口高度为px，*2为rpx；98为头部占据的高度；
-      },
-    })
-  },
 })
 </script>
 
 <style lang="scss">
+@import '@/static/css/variable.scss';
 .shopping-car-wrap {
   .toggle-edit {
     padding: 0 26rpx;
@@ -643,9 +693,9 @@ export default defineComponent({
           justify-content: center;
           align-items: center;
 
-          .image {
-            width: 36rpx;
-            height: 36rpx;
+          .iconfont {
+            font-size: 36rpx;
+            color: $top-background-color;
           }
         }
 
@@ -674,9 +724,9 @@ export default defineComponent({
               justify-content: center;
               align-items: center;
 
-              .image {
-                width: 36rpx;
-                height: 36rpx;
+              .iconfont {
+                font-size: 36rpx;
+                color: $top-background-color;
               }
             }
 
@@ -814,7 +864,7 @@ export default defineComponent({
     /* #endif */
     /* #ifndef H5 */
     bottom: 0;
-    bottom: calc(0rpx+ constant(safe-area-inset-bottom)); ///兼容 IOS<11.2/
+    bottom: calc(0rpx + constant(safe-area-inset-bottom)); ///兼容 IOS<11.2/
     bottom: calc(0rpx + env(safe-area-inset-bottom)); ///兼容 IOS>11.2/
     /* #endif */
 
@@ -841,7 +891,7 @@ export default defineComponent({
       border-radius: 22px;
       font-size: 15px;
 
-      background-image: linear-gradient(135deg, #59b3ff 0%, #1c87f0 100%);
+      background-image: linear-gradient(135deg, $top-background-color 0%, $theme-font-color 100%);
 
       &.remove {
         background-color: #d1d1d1;

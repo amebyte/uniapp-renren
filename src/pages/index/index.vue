@@ -95,7 +95,7 @@ export default defineComponent({
         {
           url: '../../static/images/skip/AAndQ.png',
           title: '答疑',
-          path: '/pages/living/index',
+          path: '/pages/shopping-cart/index',
         },
         {
           url: '../../static/images/skip/brand.png',

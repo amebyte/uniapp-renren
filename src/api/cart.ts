@@ -5,11 +5,7 @@ import request from '@/utils/request'
  *
  */
 export function fetchCartList() {
-  return request.get!(
-    '&r=goods.get_list&page=1&comefrom=wxapp&openid=sns_wa_&mid=&merchid=&authkey=&timestamp=1642046054349',
-    {},
-    { noAuth: true }
-  )
+  return request.get!('&r=member.cart.get_cart', {}, { noAuth: true })
 }
 
 /**

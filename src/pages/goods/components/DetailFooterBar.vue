@@ -88,8 +88,8 @@ export default defineComponent({
       const goodsItem = props.createCartParam()
       fetchAddCart({
         id: goodsItem.productId,
-        total: goodsItem.selectedSku.cartNum,
-        optionid: goodsItem.selectedSku.skuId,
+        cartNum: goodsItem.selectedSku.cartNum,
+        skuId: goodsItem.selectedSku.skuId,
       })
         .then((r) => {
           cartCount.value = r.cartcount

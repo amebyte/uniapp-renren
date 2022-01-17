@@ -431,7 +431,7 @@ export default defineComponent({
       item.cartNum = parseInt(item.cartNum) + 1
       const params = {
         id: item.id,
-        total: item.cartNum,
+        cartNum: item.cartNum,
         skuId: item.skuId,
       }
       updateCart(params)
@@ -448,7 +448,7 @@ export default defineComponent({
       item.cartNum = parseInt(item.cartNum) - 1
       const params = {
         id: item.id,
-        total: item.cartNum,
+        cartNum: item.cartNum,
         skuId: item.skuId,
       }
       updateCart(params)
@@ -469,7 +469,7 @@ export default defineComponent({
         }
         const params = {
           id: item.id,
-          total: count,
+          cartNum: count,
           skuId: item.skuId,
         }
         updateCart(params)
@@ -532,14 +532,15 @@ export default defineComponent({
      */
     const normalizeCart = (data) => {
       let temp: any[] = []
-      data.forEach((v) => {
-        v.list.forEach((val) => {
-          temp.push({
-            ...v,
-            ...val,
+      data &&
+        data.forEach((v) => {
+          v.list.forEach((val) => {
+            temp.push({
+              ...v,
+              ...val,
+            })
           })
         })
-      })
 
       let cartsItemGroupData: any[] = []
       temp.forEach((v) => {

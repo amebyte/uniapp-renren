@@ -2,6 +2,7 @@
 import { HEADER, HEADERPARAMS, TOKENNAME, HTTP_REQUEST_URL } from '@/config/app'
 import { store } from '@/store'
 import Cache from '@/utils/cache'
+import { urlEncode } from '@/utils/util'
 type RequestOptionsMethod = 'OPTIONS' | 'GET' | 'HEAD' | 'POST' | 'PUT' | 'DELETE' | 'TRACE' | 'CONNECT'
 type RequestOptionsMethodAll = RequestOptionsMethod | Lowercase<RequestOptionsMethod>
 
@@ -38,7 +39,9 @@ function baseRequest(
   data['merchid'] = ''
   data['authkey'] = Cache.get('authkey')
   //   }
-
+  if (params != undefined) {
+    data = urlEncode(data)
+  }
   return new Promise((reslove, reject) => {
     uni.showLoading({
       title: '加载中',

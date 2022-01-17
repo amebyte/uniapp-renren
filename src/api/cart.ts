@@ -13,7 +13,12 @@ export function fetchCartList() {
  *
  */
 export function fetchAddCart(data) {
-  return request.post!('&r=member.cart.add', data, { noAuth: true }, true)
+  const params = {
+    id: data.id,
+    total: data.cartNum,
+    optionid: data.skuId,
+  }
+  return request.post!('&r=member.cart.add', params, { noAuth: true }, true)
 }
 
 /**
@@ -21,7 +26,12 @@ export function fetchAddCart(data) {
  *
  */
 export function fetchUpdateCart(data) {
-  return request.post!('&r=member.cart.update', data, { noAuth: true }, true)
+  const params = {
+    id: data.id,
+    total: data.cartNum,
+    skuId: data.skuId,
+  }
+  return request.post!('&r=member.cart.update', params, { noAuth: true }, true)
 }
 
 /**
@@ -29,5 +39,7 @@ export function fetchUpdateCart(data) {
  *
  */
 export function fetchDeleteCart(data) {
-  return request.post!('&r=member.cart.remove', data, { noAuth: true }, true)
+  const params = { ids: data }
+  console.log('params', params)
+  return request.post!('&r=member.cart.remove', params, { noAuth: true }, true)
 }

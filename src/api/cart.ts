@@ -21,11 +21,7 @@ export function fetchAddCart(data) {
  *
  */
 export function fetchUpdateCart(data) {
-  return request.get!(
-    '&r=goods.get_list&page=1&comefrom=wxapp&openid=sns_wa_&mid=&merchid=&authkey=&timestamp=1642046054349',
-    data,
-    { noAuth: true }
-  )
+  return request.post!('&r=member.cart.update', data, { noAuth: true }, true)
 }
 
 /**
@@ -33,9 +29,5 @@ export function fetchUpdateCart(data) {
  *
  */
 export function fetchDeleteCart(data) {
-  return request.get!(
-    '&r=goods.get_list&page=1&comefrom=wxapp&openid=sns_wa_&mid=&merchid=&authkey=&timestamp=1642046054349',
-    data,
-    { noAuth: true }
-  )
+  return request.post!('&r=member.cart.remove', data, { noAuth: true }, true)
 }

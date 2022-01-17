@@ -431,7 +431,7 @@ export default defineComponent({
       item.cartNum = parseInt(item.cartNum) + 1
       const params = {
         id: item.id,
-        num: item.cartNum,
+        total: item.cartNum,
         skuId: item.skuId,
       }
       updateCart(params)
@@ -442,13 +442,13 @@ export default defineComponent({
      */
     const reduce = (item) => {
       // 先判断当前的商品数量 是否已经是1
-      if (Number(item.num) === 1) {
+      if (Number(item.cartNum) === 1) {
         return
       }
-      item.num = parseInt(item.num) - 1
+      item.cartNum = parseInt(item.cartNum) - 1
       const params = {
         id: item.id,
-        num: item.cartNum,
+        total: item.cartNum,
         skuId: item.skuId,
       }
       updateCart(params)
@@ -469,7 +469,7 @@ export default defineComponent({
         }
         const params = {
           id: item.id,
-          num: count,
+          total: count,
           skuId: item.skuId,
         }
         updateCart(params)

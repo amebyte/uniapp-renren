@@ -9,6 +9,14 @@ export function fetchCartList() {
 }
 
 /**
+ * 添加购物车
+ *
+ */
+export function fetchAddCart(data) {
+  return request.post!('&r=member.cart.add', data, { noAuth: true }, true)
+}
+
+/**
  * 更新购物车
  *
  */

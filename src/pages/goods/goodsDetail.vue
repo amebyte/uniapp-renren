@@ -16,7 +16,12 @@
     <GoodsContent :goods-info="goodsInfo" />
     <!--商品详情 end-->
     <!--底部导航栏 start-->
-    <DetailFooterBar ref="detailFooterBarRef" @setIsOpenAttrWindow="setIsOpenAttrWindow" />
+    <DetailFooterBar
+      ref="detailFooterBarRef"
+      :cart-num="cart_num"
+      :create-cart-param="createCartParam"
+      @setIsOpenAttrWindow="setIsOpenAttrWindow"
+    />
     <!--底部导航栏 end-->
     <!--规格属性 start-->
     <AttrWindow
@@ -45,6 +50,7 @@ import DetailFooterBar from './components/DetailFooterBar.vue'
 import GoodsCurriculum from './components/GoodsCurriculum.vue'
 import GoodsTeacher from './components/GoodsTeacher.vue'
 import { fetchGoodsDetail, fetchGoodsPicker } from '@/api/goods'
+import { fetchUserInfo } from '@/api/user'
 import { minHeap } from '@/utils/util'
 export default defineComponent({
   name: 'GoodsDetail',
@@ -228,7 +234,7 @@ export default defineComponent({
       setAttrVal(attrval, attrid)
       const skus = getSelectedAttrVal()
       state.attrTxt = createSelectedAttrTxt(skus)
-      const goodsItem: any = createCartParam(skus)
+      const goodsItem: any = createSelectSkuParam(skus)
       if (goodsItem) {
         if (goodsItem.selectedSku.thumb) state.attr.productSelect.image = goodsItem.selectedSku.thumb
         if (goodsItem.selectedSku.price) state.attr.productSelect.price = goodsItem.selectedSku.price
@@ -239,8 +245,18 @@ export default defineComponent({
     /**
      * 创建购物车参数
      */
-    const createCartParam = (skus) => {
+    const createCartParam = () => {
+      const skus = getSelectedAttrVal()
+      const goodsItem: any = createSelectSkuParam(skus)
+      return goodsItem
+    }
+
+    /**
+     * 创建选择的商品SKU参数
+     */
+    const createSelectSkuParam = (skus) => {
       let goodsItem = {
+        productId: state.productId,
         selectedSku: {},
       }
 
@@ -251,6 +267,8 @@ export default defineComponent({
             thumb: createThumb(skus),
             stock: o.stock,
             price: o.marketPrice,
+            skuId: o.id,
+            cartNum: state.attr.productSelect.cart_num,
           }
         }
       })
@@ -323,13 +341,25 @@ export default defineComponent({
     const openShare = () => {
       console.log('openShare')
     }
+
+    const getUserInfo = () => {
+      fetchUserInfo()
+        .then((r) => {
+          state.cart_num = r.statics.cart
+        })
+        .catch((err) => console.log(err))
+    }
+
     onShow(() => {
       getGoodsDetail()
+      getUserInfo()
     })
+
     onLoad((options) => {
       //   state.productId = options.productId!
       console.log('options', options)
     })
+
     return {
       ...toRefs(state),
       detailFooterBarRef,
@@ -340,6 +370,7 @@ export default defineComponent({
       closeWindow,
       confirm,
       openShare,
+      createCartParam,
     }
   },
 })

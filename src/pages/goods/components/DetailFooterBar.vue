@@ -24,14 +24,30 @@
 
 <script lang="ts">
 import { onPageScroll, onLoad, onShow, onHide, onReachBottom } from '@dcloudio/uni-app'
-import { ref, getCurrentInstance, reactive, toRef, computed, defineComponent, toRefs } from 'vue'
+import { ref, getCurrentInstance, reactive, toRef, computed, defineComponent, watchEffect } from 'vue'
+import { fetchAddCart } from '@/api/cart'
 
 export default defineComponent({
   name: 'DetailFooterBar',
+  props: {
+    createCartParam: {
+      type: Function,
+      default: () => {},
+    },
+    cartNum: {
+      type: Number,
+      default: 0,
+    },
+  },
   emits: ['setIsOpenAttrWindow'],
   setup(props, { emit }) {
     let cartCount = ref(0)
     let isFavorite = ref(false)
+
+    watchEffect(() => {
+      cartCount.value = props.cartNum
+    })
+
     /**
      * 打开属性窗口
      *
@@ -69,7 +85,16 @@ export default defineComponent({
      * 加入购物车
      */
     const addCart = () => {
-      console.log('addCart')
+      const goodsItem = props.createCartParam()
+      fetchAddCart({
+        id: goodsItem.productId,
+        total: goodsItem.selectedSku.cartNum,
+        optionid: goodsItem.selectedSku.skuId,
+      })
+        .then((r) => {
+          cartCount.value = r.cartcount
+        })
+        .catch((err) => console.log(err))
     }
     return {
       cartCount,
@@ -121,7 +146,7 @@ export default defineComponent({
         background-color: #ea3401;
         position: absolute;
         top: 10rpx;
-        right: 20rpx;
+        right: 0rpx;
         border-radius: 100%;
         color: #fff;
         font-size: 18rpx;
